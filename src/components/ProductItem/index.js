@@ -1,18 +1,36 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import Currency from 'react-currency-formatter';
+import { useDispatch } from 'react-redux';
 import { AiFillStar } from 'react-icons/ai';
 import { BsCheckLg } from 'react-icons/bs';
+import { addToCart } from '../../slices/cartSlice';
 
 const MAX_RATING = 5;
 const MIN_RATING = 1;
 
 export default function ProductItem({ product }) {
+  const dispatch = useDispatch();
+
   const [rating] = useState(
     Math.floor(Math.random() * (MAX_RATING - MIN_RATING + 1)) + MIN_RATING
   );
 
   const [hasPrime] = useState(Math.random() < 0.5);
+
+  const handleAddItemCart = () => {
+    const data = {
+      id: product.id,
+      title: product.title,
+      price: product.price,
+      description: product.description,
+      category: product.category,
+      image: product.image,
+      rating,
+      hasPrime,
+    };
+    dispatch(addToCart(data));
+  };
 
   return (
     <div className="relative flex flex-col m-5 bg-white z-30 p-10 shadow-md">
@@ -52,7 +70,9 @@ export default function ProductItem({ product }) {
         </div>
       )}
 
-      <button className="mt-auto button">Add to Basket</button>
+      <button onClick={handleAddItemCart} className="mt-auto button">
+        Add to Cart
+      </button>
     </div>
   );
 }

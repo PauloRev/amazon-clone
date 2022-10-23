@@ -1,17 +1,28 @@
 import Image from 'next/image';
+import { signIn, signOut, useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
+import { useSelector } from 'react-redux';
+import { selectItems } from '../../slices/cartSlice';
 import {
   AiOutlineMenu,
   AiOutlineSearch,
   AiOutlineShoppingCart,
 } from 'react-icons/ai';
+
 import logo from '../../assets/logo.png';
 
 export default function Header() {
+  const session = useSession();
+  const router = useRouter();
+
+  const items = useSelector(selectItems);
+
   return (
     <header>
       <div className="flex items-center bg-[#131921] p-1 flex-grow py-2">
         <div className="mt-2 flex items-center flex-grow sm:flex-grow-0 mx-6">
           <Image
+            onClick={() => router.push('/')}
             src={logo}
             width={100}
             height={40}
@@ -27,8 +38,12 @@ export default function Header() {
           <AiOutlineSearch className="w-14 h-14 p-4" />
         </div>
         <div className="text-white flex items-center text-xs space-x-6 mx-6 whitespace-nowrap">
-          <div className="link">
-            <p>Hello Paulo Henrique</p>
+          <div className="link" onClick={!session?.data ? signIn : signOut}>
+            <p>
+              {session?.data
+                ? `Hello, ${session?.data?.user?.name}`
+                : 'Hello, sign in'}
+            </p>
             <p className="font-extrabold md:text-sm">Account & Lists</p>
           </div>
 
@@ -37,13 +52,16 @@ export default function Header() {
             <p className="font-extrabold md:text-sm">& Orders</p>
           </div>
 
-          <div className="relative link flex items-center">
-            <span className="absolute top-0 right-0 md:right-10 w-4 h-4 bg-yellow-400 text-center rounded-full text-[#131921] font-bold">
-              0
+          <div
+            onClick={() => router.push('/checkout')}
+            className="relative link flex items-center"
+          >
+            <span className="absolute top-0 right-0 md:right-7 w-4 h-4 bg-yellow-400 text-center rounded-full text-[#131921] font-bold">
+              {items.length}
             </span>
             <AiOutlineShoppingCart className="w-10 h-10" />
             <p className="hidden md:inline font-extrabold md:text-sm mt-2">
-              Basket
+              Cart
             </p>
           </div>
         </div>

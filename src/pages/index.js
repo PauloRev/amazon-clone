@@ -7,7 +7,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Amazon Clone</title>
+        <title>Amazon Clone | Home</title>
       </Head>
 
       <div>
